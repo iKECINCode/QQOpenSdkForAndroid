@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/yikuo123/MTAForAndroid.svg)](https://jitpack.io/#yikuo123/MTAForAndroid)
+[![](https://jitpack.io/v/yikuo123/QQOpenSdkForAndroid.svg)](https://jitpack.io/#yikuo123/QQOpenSdkForAndroid)
 # MTAForAndroid
 腾讯官方QQ登录sdk，支持jitpack
 

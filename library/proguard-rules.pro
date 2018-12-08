@@ -33,6 +33,4 @@
 -dontwarn org.apache.**
 -dontwarn android.**
 -dontwarn java.lang.invoke.**
-
-
 -keep class com.tencent.**  {* ;}

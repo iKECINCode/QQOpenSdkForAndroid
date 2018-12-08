@@ -17,4 +17,4 @@
 #}
 -dontwarn javax.annotation.**
 -keepclasseswithmembernames,includedescriptorclasses class * { native <methods>; }
--keep class com.tencent.**  {* ;}
+#-keep class com.tencent.**  {* ;}

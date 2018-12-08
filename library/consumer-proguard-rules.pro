@@ -17,3 +17,4 @@
 #}
 -dontwarn javax.annotation.**
 -keepclasseswithmembernames,includedescriptorclasses class * { native <methods>; } #避免包含jni方法的类被混淆和移除
+-keep class com.tencent.**  {* ;}

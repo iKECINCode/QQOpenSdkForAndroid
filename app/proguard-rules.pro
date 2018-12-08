@@ -15,3 +15,5 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepnames class * extends java.lang.Throwable #±ÜÃâÒì³£Ãû³Æ±»»ìÏı

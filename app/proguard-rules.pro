@@ -16,4 +16,4 @@
 #   public *;
 #}
 
--keepnames class * extends java.lang.Throwable #±ÜÃâÒì³£Ãû³Æ±»»ìÏı
+-keepnames class * extends java.lang.Throwable #é¿å…å¼‚å¸¸åç§°è¢«æ··æ·†

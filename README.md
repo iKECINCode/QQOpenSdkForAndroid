@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/yikuo123/QQOpenSdkForAndroid.svg)](https://jitpack.io/#yikuo123/QQOpenSdkForAndroid)
+[![](https://jitpack.io/v/iKECINCode/QQOpenSdkForAndroid.svg)](https://jitpack.io/#iKECINCode/QQOpenSdkForAndroid)
 
 # 腾讯官方QQ登录sdk
 

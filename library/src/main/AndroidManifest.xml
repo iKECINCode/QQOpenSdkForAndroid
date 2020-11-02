@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tencentConnect.library">
+    package="com.ikecin.sdk.qqsdk">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+  <!-- for android 11 -->
     <queries>
         <package android:name="com.tencent.mobileqq" />
         <package android:name="com.tencent.mobileqqi" />
@@ -12,11 +13,7 @@
         <package android:name="com.tencent.tim" />
     </queries>
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/app_name"
-        android:supportsRtl="true">
-
+    <application>
         <!-- for android 9 -->
         <uses-library
             android:name="org.apache.http.legacy"

@@ -15,6 +15,5 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--dontwarn javax.annotation.**
+
 -keepclasseswithmembernames,includedescriptorclasses class * { native <methods>; }
-#-keep class com.tencent.**  {* ;}

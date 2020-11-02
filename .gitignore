@@ -16,8 +16,10 @@ build
 manifest-merger-release-report.txt
 output.json
 /import-summary.txt
+output-metadata.json
 
 .externalNativeBuild
+.cxx
 
 /.idea/workspace.xml
 /.idea/libraries
@@ -27,4 +29,4 @@ output.json
 /.idea/kotlinc.xml
 /.idea/codeStyleSettings.xml
 /.idea/caches
-/maven
+/.idea/codeStyles/codeStyleConfig.xml

@@ -1,31 +1,48 @@
 plugins {
-    id "com.github.dcendents.android-maven" version "2.0"
     id "com.android.library"
+    id "maven-publish"
 }
 
 ext {
     customVersionCode = 1
     customVersionName = '1.0.0'
-    customGroupId = 'com.github.yikuo123' /**记得同步更改AndroidManifest.xml中的package */
-    customArtifactId = 'qqsdk'
+    customGroupId = 'com.ikecin.sdk'
+    customArtifactId = 'qqsdk' // 必须保证artifactId唯一，AndroidManifest中的package值也要唯一，建议跟artifactID保持一致
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 30
     defaultConfig {
-        minSdkVersion 17
-        targetSdkVersion 22
+        minSdkVersion 21
+        targetSdkVersion 30
         versionCode customVersionCode
         versionName customVersionName
-        //consumerProguardFiles 'consumer-proguard-rules.pro'
+        consumerProguardFiles 'consumer-proguard-rules.pro'
     }
+
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'consumer-proguard-rules.pro'
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
+            zipAlignEnabled true
+        }
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'consumer-proguard-rules.pro'
+            debuggable true
+            jniDebuggable true
+            renderscriptDebuggable true
+            zipAlignEnabled false
         }
     }
+    buildFeatures {
+        dataBinding false
+        viewBinding true
+    }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -38,26 +55,19 @@ repositories {
 }
 
 dependencies {
-    api fileTree(dir: 'libs', include: ['*.jar'])
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
 }
 
-/**
- * 注意 group、version、artifactId 只对本地maven发布有效，对gitpack无效
- */
-apply plugin: 'com.github.dcendents.android-maven'
-group = customGroupId
-version = customVersionCode
-
 task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+    archiveClassifier.set("sources")
 }
 
 task javadoc(type: Javadoc) {
     failOnError false
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.compile
     options {
         encoding 'utf-8'
         charSet 'utf-8'
@@ -67,24 +77,26 @@ task javadoc(type: Javadoc) {
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier.set("javadoc")
     from javadoc.destinationDir
 }
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
-
-/** 使用命令 gradlew uploadArchives 即可发布到本地maven */
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: rootDir.toPath().resolve('maven').toUri())
-            //repository(url: "file://D:\\YangHeng\\Documents\\AndroidStudioProjects\\Maven")
-            pom.groupId = customGroupId
-            pom.version = customVersionName
-            pom.artifactId = customArtifactId
+/**使用命令 gradlew publish 即可发布到本地maven*/
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId customGroupId
+                artifactId customArtifactId
+                version customVersionName
+                artifact sourcesJar
+                artifact javadocJar
+            }
+        }
+        repositories {
+            maven {
+                url = "$buildDir/repo"
+            }
         }
     }
 }

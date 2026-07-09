@@ -7,14 +7,15 @@ ext {
     customVersionCode = 1
     customVersionName = '1.0.0'
     customGroupId = 'com.ikecin.sdk'
-    customArtifactId = 'qqsdk' // 必须保证artifactId唯一，AndroidManifest中的package值也要唯一，建议跟artifactID保持一致
+    customArtifactId = 'qqsdk'
 }
 
 android {
-    compileSdkVersion 30
+    namespace "${customGroupId}.${customArtifactId}"
+    compileSdk 35
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdk 21
+        targetSdk 35
         versionCode customVersionCode
         versionName customVersionName
         consumerProguardFiles 'consumer-proguard-rules.pro'
@@ -22,30 +23,37 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'consumer-proguard-rules.pro'
+            minifyEnabled false
             debuggable false
             jniDebuggable false
-            renderscriptDebuggable false
-            zipAlignEnabled true
         }
         debug {
             minifyEnabled false
             debuggable true
             jniDebuggable true
-            renderscriptDebuggable true
-            zipAlignEnabled false
         }
     }
     buildFeatures {
+        buildConfig true
         dataBinding false
-        viewBinding true
+        viewBinding false
     }
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            //withJavadocJar()
+        }
+    }
+}
+
+// 用于编译时保留方法参数名
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-parameters'
 }
 
 repositories {
@@ -55,47 +63,35 @@ repositories {
 }
 
 dependencies {
+    // library 不支持包含 aar，可以使用 compileOnly、compileOnlyApi、在线引用，或者为 aar 创建单独的 module
     api fileTree(include: ['*.jar'], dir: 'libs')
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.sourceFiles
-    archiveClassifier.set("sources")
-}
-
-task javadoc(type: Javadoc) {
-    failOnError false
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    options {
-        encoding 'utf-8'
-        charSet 'utf-8'
-    }
-    exclude '**/BuildConfig.java'
-    exclude '**/R.java'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier.set("javadoc")
-    from javadoc.destinationDir
-}
-/**使用命令 gradlew publish 即可发布到本地maven*/
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
+// 执行 gradlew publish 即可发布到本地目录
+publishing {
+    publications {
+        lib(MavenPublication) {
+            groupId customGroupId
+            artifactId customArtifactId
+            version customVersionName
+            afterEvaluate {
                 from components.release
-                groupId customGroupId
-                artifactId customArtifactId
-                version customVersionName
-                artifact sourcesJar
-                artifact javadocJar
             }
         }
-        repositories {
+    }
+    repositories {
+        maven {
+            name = 'local'
+            url = layout.buildDirectory.dir("maven")
+        }
+        if (project.hasProperty("remoteMavenUrl")) {
             maven {
-                url = "$buildDir/repo"
+                url = project.findProperty('remoteMavenUrl')
+                credentials {
+                    username = project.findProperty('remoteMavenUsername')
+                    password = project.findProperty('remoteMavenPassword')
+                }
             }
         }
     }

@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
 
         mBinding.ok.setOnClickListener(v -> {
             Tencent mTencent = Tencent.createInstance("1104677783", getApplicationContext());
-            Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), mTencent.toString(), Toast.LENGTH_SHORT).show();
         });
     }
 }

@@ -39,6 +39,7 @@ android {
     productFlavors {
         Demo {
             applicationId 'com.ikecin.demo'
+            manifestPlaceholders.put("QQ_APP_ID", "1104677783")
         }
     }
 }
